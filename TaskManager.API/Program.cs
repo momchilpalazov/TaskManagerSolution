@@ -23,7 +23,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
 var jwtSetings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSetings.GetValue<string>("SecretKey");
+var secretKey = jwtSetings.GetValue<string>("Secret");
 
 builder.Services.AddAuthentication(options =>
 {
