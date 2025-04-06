@@ -16,6 +16,8 @@ namespace TaskManager.API.Controllers
             _taskService = taskService;
         }
 
+
+        [Authorize(Roles = "Manager,Admin")]
         [HttpPost]
         public async Task<ActionResult<TaskDto>> CreateTask([FromBody] CreateTaskDto dto)
         {

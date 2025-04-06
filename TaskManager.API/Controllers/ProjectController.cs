@@ -5,7 +5,7 @@ using TaskManager.Application.Interfaces;
 
 namespace TaskManager.API.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ProjectController : ControllerBase
@@ -25,6 +25,7 @@ namespace TaskManager.API.Controllers
         }
 
         // POST: api/Project
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<ProjectDto>> CreateProject([FromBody] CreateProjectDto dto)
         {
