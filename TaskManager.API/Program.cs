@@ -1,10 +1,13 @@
 using System.Text;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using TaskManager.API.Middleware;
 using TaskManager.Application.Interfaces;
 using TaskManager.Application.Services;
+using TaskManager.Application.Validators;
 using TaskManager.Infrastructure.Data;
 using TaskManager.Infrastructure.Repositories;
 using TaskManager.Infrastructure.Services;
@@ -21,6 +24,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddControllers();
 
+builder.Services.AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters();
+
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -35,6 +41,10 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTaskDtoValidator>();
+
+
+
 
 
 var jwtSetings = builder.Configuration.GetSection("JwtSettings");
