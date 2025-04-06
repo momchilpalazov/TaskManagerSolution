@@ -1,5 +1,6 @@
 ﻿
 
+using AutoMapper;
 using Moq;
 using TaskManager.Application.DTOs;
 using TaskManager.Application.Interfaces;
@@ -17,6 +18,7 @@ namespace TaskManager.Tests.Services
             var fakeUnitOfWork = new Mock<IUnitOfWork>();
             var fakeEmailService = new Mock<IEmailService>();
             var fakeAuditService = new Mock<IAuditService>();
+            var fakeMapper = new Mock<IMapper>();
 
             var assignedUser = new User
             {
@@ -36,7 +38,9 @@ namespace TaskManager.Tests.Services
             var service = new TaskService(
                 fakeUnitOfWork.Object,
                 fakeEmailService.Object,
-                fakeAuditService.Object
+                fakeAuditService.Object,
+                  fakeMapper.Object
+
             );
 
             var dto = new CreateTaskDto

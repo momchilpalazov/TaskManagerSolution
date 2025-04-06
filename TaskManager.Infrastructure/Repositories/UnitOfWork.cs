@@ -15,6 +15,8 @@ namespace TaskManager.Infrastructure.Repositories
         public IGenericRepository<Project> Projects { get; }
         public IGenericRepository<TaskItem> TaskItems { get; }
 
+        public IGenericRepository<Label> Labels => throw new NotImplementedException();
+
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;

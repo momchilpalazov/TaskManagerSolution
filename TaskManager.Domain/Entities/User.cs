@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace TaskManager.Domain.Entities
 {
@@ -18,5 +14,8 @@ namespace TaskManager.Domain.Entities
 
         public ICollection<Project> Projects { get; set; } = new List<Project>();
         public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiry { get; set; }
+
     }
 }

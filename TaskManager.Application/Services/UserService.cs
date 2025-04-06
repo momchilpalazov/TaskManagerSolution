@@ -4,7 +4,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using TaskManager.Application.DTOs;
@@ -30,16 +29,52 @@ namespace TaskManager.Application.Services
             if (user == null || !VerifyPasswordHash(dto.Password, user.PasswordHash, user.PasswordSalt))
                 throw new Exception("Invalid email or password.");
 
-            // Генерирай JWT токен
+            
             var token = GenerateJwtToken(user);
+
+            
+            user.RefreshToken = Guid.NewGuid().ToString();
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+
+            await _unitOfWork.SaveChangesAsync();
 
             return new LoginResponseDto
             {
                 Token = token,
                 Email = user.Email,
-                FullName = $"{user.FirstName} {user.LastName}"
+                FullName = $"{user.FirstName} {user.LastName}",
+                RefreshToken = user.RefreshToken!
             };
         }
+
+
+        public async Task<AuthResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request)
+        {
+            var user = await _unitOfWork.Users.FindAsync(u => u.Email == request.Email);
+            var foundUser = user.FirstOrDefault();
+
+            if (foundUser == null ||
+                foundUser.RefreshToken != request.RefreshToken ||
+                foundUser.RefreshTokenExpiry < DateTime.UtcNow)
+            {
+                throw new UnauthorizedAccessException("Invalid refresh token");
+            }
+
+            var accessToken = GenerateJwtToken(foundUser); 
+
+            var newRefreshToken = Guid.NewGuid().ToString();
+            foundUser.RefreshToken = newRefreshToken;
+            foundUser.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return new AuthResponseDto
+            {
+                Token = accessToken,
+                RefreshToken = newRefreshToken
+            };
+        }
+
 
         public async Task<UserResponseDto> RegisterAsync(RegisterUserDto dto)
         {
@@ -112,6 +147,8 @@ namespace TaskManager.Application.Services
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             return computedHash.SequenceEqual(hash);
         }
+
+
 
     }
 }

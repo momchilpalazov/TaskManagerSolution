@@ -7,6 +7,13 @@ namespace TaskManager.Application.Interfaces
     {
         Task<UserResponseDto> RegisterAsync(RegisterUserDto dto);
         Task<LoginResponseDto> LoginAsync(LoginDto dto);
+
+     
+
+
+
+
+
     }
 
 }
