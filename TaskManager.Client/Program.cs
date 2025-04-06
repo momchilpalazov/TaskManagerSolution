@@ -6,12 +6,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents(options =>
+    {
+       
+    });
+
 
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<JwtStorageService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<ProtectedSessionStorage>();
+builder.Services.AddScoped<TaskService>();
+
 
 
 var app = builder.Build();

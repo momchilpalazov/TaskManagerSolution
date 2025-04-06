@@ -4,11 +4,13 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using TaskManager.API.Middleware;
 using TaskManager.Application.Interfaces;
 using TaskManager.Application.Mappings;
 using TaskManager.Application.Services;
+using TaskManager.Application.Settings;
 using TaskManager.Application.Validators;
 using TaskManager.Infrastructure.Data;
 using TaskManager.Infrastructure.Repositories;
@@ -29,6 +31,10 @@ namespace TaskManager.API
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
+            // Configure MailSettings
+            var mailSettings = builder.Configuration.GetSection("MailSettings");
+            builder.Services.Configure<MailSettings>(mailSettings);
+            builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<MailSettings>>().Value);
 
             builder.Services.AddControllers();
 

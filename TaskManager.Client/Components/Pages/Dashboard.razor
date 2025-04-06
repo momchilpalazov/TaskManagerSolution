@@ -1,0 +1,61 @@
+﻿@page "/dashboard"
+@using TaskManager.Client.Models
+@using TaskManager.Client.Services
+@inject TaskService TaskService
+@inject JwtStorageService JwtStorage
+@inject NavigationManager Navigation
+
+<h3>Моите задачи</h3>
+
+@if (isLoading)
+{
+    <p>Зареждане...</p>
+}
+else if (tasks is not null && tasks.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Заглавие</th>
+                <th>Статус</th>
+                <th>Краен срок</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in tasks)
+            {
+                <tr>
+                    <td>@task.Title</td>
+                    <td>@task.Status</td>
+                    <td>@task.DueDate?.ToString("dd.MM.yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Няма налични задачи.</p>
+}
+
+@code {
+    private List<TaskDto>? tasks;
+    private bool isLoading = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var token = await JwtStorage.GetTokenAsync();
+            if (string.IsNullOrEmpty(token))
+            {
+                Navigation.NavigateTo("/login");
+                return;
+            }
+
+            tasks = await TaskService.GetAllAsync(token);
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+}
