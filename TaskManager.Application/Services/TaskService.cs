@@ -223,6 +223,33 @@ namespace TaskManager.Application.Services
             });
         }
 
+        public async Task<IEnumerable<TaskDto>> SearchTasksAsync(Guid userId, string keyword)
+        {
+            if (string.IsNullOrWhiteSpace(keyword))
+                return Enumerable.Empty<TaskDto>();
+
+            var tasks = await _unitOfWork.TaskItems.FindAsync(t =>
+                t.AssignedToUserId == userId &&
+                (
+                    t.Title.ToLower().Contains(keyword.ToLower()) ||
+                    (t.Description != null && t.Description.ToLower().Contains(keyword.ToLower()))
+                )
+            );
+
+            return tasks.Select(t => new TaskDto
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                Status = t.Status.ToString(),
+                Priority = t.Priority.ToString(),
+                CreatedAt = t.CreatedAt,
+                DueDate = t.DueDate,
+                AssignedToEmail = t.AssignedToUser?.Email ?? ""
+            });
+        }
+
+
 
 
     }

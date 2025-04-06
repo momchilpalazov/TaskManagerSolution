@@ -88,6 +88,18 @@ namespace TaskManager.API.Controllers
             return File(csv, "text/csv", "tasks_export.csv");
         }
 
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<TaskDto>>> SearchTasks([FromQuery] string keyword)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null) return Unauthorized();
+
+            var userId = Guid.Parse(userIdClaim.Value);
+            var results = await _taskService.SearchTasksAsync(userId, keyword);
+            return Ok(results);
+        }
+
+
 
 
 

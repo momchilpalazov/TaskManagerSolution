@@ -14,6 +14,8 @@ namespace TaskManager.Application.Interfaces
         Task<bool> DeleteTaskAsync(Guid id);
         Task<IEnumerable<TaskDto>> GetTasksForUserAsync(Guid userId);
         Task<IEnumerable<TaskDto>> GetOverdueTasksAsync(Guid userId);
+        Task<IEnumerable<TaskDto>> SearchTasksAsync(Guid userId, string keyword);
+
 
 
 
