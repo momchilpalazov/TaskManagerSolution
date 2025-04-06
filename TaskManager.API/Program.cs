@@ -106,6 +106,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles(); 
+
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseAuthentication();

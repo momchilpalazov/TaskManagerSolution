@@ -13,6 +13,8 @@ namespace TaskManager.Infrastructure.Data
         public DbSet<Project> Projects { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<AuditLog> AuditLogs { get; set; } = null!;
+        public DbSet<TaskAttachment> TaskAttachments => Set<TaskAttachment>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -24,6 +24,8 @@ namespace TaskManager.Domain.Entities
         public User AssignedToUser { get; set; } = null!;
 
         public ICollection<TaskLabel> TaskLabels { get; set; } = new List<TaskLabel>();
+        public ICollection<TaskAttachment> Attachments { get; set; } = new List<TaskAttachment>();
+
 
     }
 }
