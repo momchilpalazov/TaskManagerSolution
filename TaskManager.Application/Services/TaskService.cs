@@ -11,11 +11,13 @@ namespace TaskManager.Application.Services
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
+        private readonly IAuditService _auditService;
 
-        public TaskService(IUnitOfWork unitOfWork, IEmailService emailService)
+        public TaskService(IUnitOfWork unitOfWork, IEmailService emailService, IAuditService auditService)
         {
             _unitOfWork = unitOfWork;
             _emailService = emailService;
+            _auditService = auditService;
         }
 
         // This method is not implemented yet. It should create a new task in the database.
@@ -49,6 +51,9 @@ namespace TaskManager.Application.Services
 
                 await _emailService.SendAsync(user.Email, "Нова задача ти е възложена",
                 $"Заглавие: {task.Title}\nОписание: {task.Description ?? "няма"}\nКраен срок: {task.DueDate?.ToShortDateString() ?? "няма"}");
+
+                await _auditService.LogAsync("Task", "Create", user.Email, $"Задача: {task.Title}");
+
             }
 
             return new TaskDto
