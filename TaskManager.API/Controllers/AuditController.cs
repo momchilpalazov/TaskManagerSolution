@@ -5,6 +5,7 @@ using TaskManager.Infrastructure.Data;
 
 namespace TaskManager.API.Controllers
 {
+    [ApiVersion("1.0")]
     [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]

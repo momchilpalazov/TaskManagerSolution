@@ -5,6 +5,7 @@ using TaskManager.Application.Interfaces;
 
 namespace TaskManager.API.Controllers
 {
+    [ApiVersion("1.0")]
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
