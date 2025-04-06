@@ -1,10 +1,18 @@
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using TaskManager.Client.Components;
+using TaskManager.Client.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<JwtStorageService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<ProtectedSessionStorage>();
+
 
 var app = builder.Build();
 
