@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using TaskManager.API.Middleware;
 using TaskManager.Application.Interfaces;
+using TaskManager.Application.Mappings;
 using TaskManager.Application.Services;
 using TaskManager.Application.Validators;
 using TaskManager.Infrastructure.Data;
@@ -42,6 +43,8 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateTaskDtoValidator>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 
 
 

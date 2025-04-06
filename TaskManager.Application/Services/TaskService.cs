@@ -1,5 +1,6 @@
 ﻿
 
+using AutoMapper;
 using TaskManager.Application.DTOs;
 using TaskManager.Application.Interfaces;
 using TaskManager.Domain.Entities;
@@ -12,12 +13,14 @@ namespace TaskManager.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
         private readonly IAuditService _auditService;
+        private readonly IMapper _mapper;
 
-        public TaskService(IUnitOfWork unitOfWork, IEmailService emailService, IAuditService auditService)
+        public TaskService(IUnitOfWork unitOfWork, IEmailService emailService, IAuditService auditService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _emailService = emailService;
             _auditService = auditService;
+            _mapper = mapper;
         }
 
         // This method is not implemented yet. It should create a new task in the database.
@@ -27,16 +30,7 @@ namespace TaskManager.Application.Services
             Enum.TryParse<Domain.Entities.TaskStatus>(dto.Status, out var status);
             Enum.TryParse<TaskPriority>(dto.Priority, out var priority);
 
-            var task = new TaskItem
-            {
-                Title = dto.Title,
-                Description = dto.Description,
-                ProjectId = dto.ProjectId,
-                AssignedToUserId = dto.AssignedToUserId,
-                Status = status,
-                Priority = priority,
-                DueDate = dto.DueDate
-            };
+            var task = _mapper.Map<TaskItem>(dto);
 
             await _unitOfWork.TaskItems.AddAsync(task);
             await _unitOfWork.SaveChangesAsync();
@@ -56,19 +50,9 @@ namespace TaskManager.Application.Services
 
             }
 
-            return new TaskDto
-            {
-                Id = task.Id,
-                Title = task.Title,
-                Description = task.Description,
-                Status = task.Status.ToString(),
-                Priority = task.Priority.ToString(),
-                CreatedAt = task.CreatedAt,
-                DueDate = task.DueDate,
-                AssignedToEmail = user?.Email ?? ""
-            };
+            return _mapper.Map<TaskDto>(task);
 
-          
+
         }
 
         public async Task<IEnumerable<TaskDto>> FilterTasksAsync(FilterTasksDto filter)
