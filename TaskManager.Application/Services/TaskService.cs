@@ -39,6 +39,10 @@ namespace TaskManager.Application.Services
 
             var user = await _unitOfWork.Users.GetByIdAsync(task.AssignedToUserId);
 
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"[Task Created] '{task.Title}' assigned to user {user?.Email}, due by {task.DueDate?.ToShortDateString() ?? "unspecified"}.");
+            Console.ResetColor();
+
             return new TaskDto
             {
                 Id = task.Id,
@@ -161,6 +165,31 @@ namespace TaskManager.Application.Services
             });
         }
 
-        
+
+        public async Task<IEnumerable<TaskDto>> GetOverdueTasksAsync(Guid userId)
+        {
+            var now = DateTime.UtcNow.Date;
+            var tasks = await _unitOfWork.TaskItems.FindAsync(t =>
+                t.AssignedToUserId == userId &&
+                t.DueDate.HasValue &&
+                t.DueDate.Value.Date < now &&
+                t.Status != Domain.Entities.TaskStatus.Done
+            );
+
+            return tasks.Select(task => new TaskDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                Status = task.Status.ToString(),
+                Priority = task.Priority.ToString(),
+                CreatedAt = task.CreatedAt,
+                DueDate = task.DueDate,
+                AssignedToEmail = task.AssignedToUser?.Email ?? ""
+            });
+        }
+
+
+
     }
 }

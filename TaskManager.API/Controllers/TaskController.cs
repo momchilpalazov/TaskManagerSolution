@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Application.DTOs;
 using TaskManager.Application.Interfaces;
@@ -65,6 +66,18 @@ namespace TaskManager.API.Controllers
             var tasks = await _taskService.GetTasksForUserAsync(userId);
             return Ok(tasks);
         }
+
+        [HttpGet("overdue")]
+        public async Task<ActionResult<IEnumerable<TaskDto>>> GetOverdueTasks()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null) return Unauthorized();
+
+            var userId = Guid.Parse(userIdClaim.Value);
+            var tasks = await _taskService.GetOverdueTasksAsync(userId);
+            return Ok(tasks);
+        }
+
 
 
 
