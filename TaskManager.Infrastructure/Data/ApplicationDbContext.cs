@@ -12,6 +12,7 @@ namespace TaskManager.Infrastructure.Data
         public DbSet<TaskItem> TaskItems { get; set; } = null!;
         public DbSet<Project> Projects { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
+        public DbSet<AuditLog> AuditLogs { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -32,6 +33,8 @@ namespace TaskManager.Infrastructure.Data
                 .WithOne(t => t.Project)
                 .HasForeignKey(t => t.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
 
 
         }
