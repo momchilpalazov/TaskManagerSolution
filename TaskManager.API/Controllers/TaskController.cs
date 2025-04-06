@@ -25,7 +25,7 @@ namespace TaskManager.API.Controllers
         public async Task<ActionResult<TaskDto>> CreateTask([FromBody] CreateTaskDto dto)
         {
             var result = await _taskService.CreateTaskAsync(dto);
-            return Ok(result);
+            return CreatedAtAction(nameof(CreateTask), new { id = result.Id }, result);
         }
 
         [HttpGet("project/{projectId}")]

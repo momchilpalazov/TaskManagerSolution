@@ -1,8 +1,7 @@
-﻿
-
-using AutoMapper;
+﻿using AutoMapper;
 using TaskManager.Application.DTOs;
 using TaskManager.Application.Interfaces;
+using TaskManager.Application.Mappings;
 using TaskManager.Domain.Entities;
 
 namespace TaskManager.Application.Services
@@ -32,12 +31,11 @@ namespace TaskManager.Application.Services
 
             var task = _mapper.Map<TaskItem>(dto);
 
-            if (dto.LabelIds.Any())
+            if (dto.LabelIds != null && dto.LabelIds.Any())
             {
                 var labels = await _unitOfWork.Labels.FindAsync(l => dto.LabelIds.Contains(l.Id));
                 task.TaskLabels = labels.Select(l => new TaskLabel { Label = l }).ToList();
             }
-
 
             await _unitOfWork.TaskItems.AddAsync(task);
             await _unitOfWork.SaveChangesAsync();
@@ -54,12 +52,9 @@ namespace TaskManager.Application.Services
                 $"Заглавие: {task.Title}\nОписание: {task.Description ?? "няма"}\nКраен срок: {task.DueDate?.ToShortDateString() ?? "няма"}");
 
                 await _auditService.LogAsync("Task", "Create", user.Email, $"Задача: {task.Title}");
-
             }
 
             return _mapper.Map<TaskDto>(task);
-
-
         }
 
         public async Task<IEnumerable<TaskDto>> FilterTasksAsync(FilterTasksDto filter)
