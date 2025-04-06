@@ -52,6 +52,51 @@ namespace TaskManager.Application.Services
             };
         }
 
+        public async Task<IEnumerable<TaskDto>> FilterTasksAsync(FilterTasksDto filter)
+        {
+            var allTasks = await _unitOfWork.TaskItems.GetAllAsync();
+
+            var filtered = allTasks.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter.Status))
+            {
+                Enum.TryParse<Domain.Entities.TaskStatus>(filter.Status, out var status);
+                filtered = filtered.Where(t => t.Status == status);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Priority))
+            {
+                Enum.TryParse<TaskPriority>(filter.Priority, out var priority);
+                filtered = filtered.Where(t => t.Priority == priority);
+            }
+
+            if (filter.AssignedToUserId.HasValue)
+            {
+                filtered = filtered.Where(t => t.AssignedToUserId == filter.AssignedToUserId.Value);
+            }
+
+            if (filter.DueBefore.HasValue)
+            {
+                filtered = filtered.Where(t => t.DueDate.HasValue && t.DueDate.Value.Date <= filter.DueBefore.Value.Date);
+            }
+
+            var users = await _unitOfWork.Users.GetAllAsync();
+            var userDictionary = users.ToDictionary(u => u.Id, u => u.Email);
+
+            return filtered.Select(task => new TaskDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                Status = task.Status.ToString(),
+                Priority = task.Priority.ToString(),
+                CreatedAt = task.CreatedAt,
+                DueDate = task.DueDate,
+                AssignedToEmail = userDictionary.ContainsKey(task.AssignedToUserId) ? userDictionary[task.AssignedToUserId] : ""
+            });
+        }
+
+
         public async Task<IEnumerable<TaskDto>> GetTasksByProjectIdAsync(Guid projectId)
         {
             var tasks = await _unitOfWork.TaskItems.FindAsync(t => t.ProjectId == projectId);

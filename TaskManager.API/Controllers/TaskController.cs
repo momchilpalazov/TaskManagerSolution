@@ -32,5 +32,12 @@ namespace TaskManager.API.Controllers
             return Ok(tasks);
         }
 
+        [HttpGet("filter")]
+        public async Task<ActionResult<IEnumerable<TaskDto>>> FilterTasks([FromQuery] FilterTasksDto filter)
+        {
+            var tasks = await _taskService.FilterTasksAsync(filter);
+            return Ok(tasks);
+        }
+
     }
 }
