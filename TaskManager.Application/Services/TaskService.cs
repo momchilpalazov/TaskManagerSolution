@@ -10,10 +10,12 @@ namespace TaskManager.Application.Services
     {
 
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailService _emailService;
 
-        public TaskService(IUnitOfWork unitOfWork)
+        public TaskService(IUnitOfWork unitOfWork, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
+            _emailService = emailService;
         }
 
         // This method is not implemented yet. It should create a new task in the database.
@@ -39,9 +41,15 @@ namespace TaskManager.Application.Services
 
             var user = await _unitOfWork.Users.GetByIdAsync(task.AssignedToUserId);
 
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"[Task Created] '{task.Title}' assigned to user {user?.Email}, due by {task.DueDate?.ToShortDateString() ?? "unspecified"}.");
-            Console.ResetColor();
+            if (user != null)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"[Task Created] '{task.Title}' assigned to user {user.Email}, due by {task.DueDate?.ToShortDateString() ?? "unspecified"}.");
+                Console.ResetColor();
+
+                await _emailService.SendAsync(user.Email, "Нова задача ти е възложена",
+                $"Заглавие: {task.Title}\nОписание: {task.Description ?? "няма"}\nКраен срок: {task.DueDate?.ToShortDateString() ?? "няма"}");
+            }
 
             return new TaskDto
             {
@@ -54,6 +62,8 @@ namespace TaskManager.Application.Services
                 DueDate = task.DueDate,
                 AssignedToEmail = user?.Email ?? ""
             };
+
+          
         }
 
         public async Task<IEnumerable<TaskDto>> FilterTasksAsync(FilterTasksDto filter)
