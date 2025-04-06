@@ -180,6 +180,25 @@ namespace TaskManager.Application.Services
             });
         }
 
+        public async Task<IEnumerable<TaskDto>> GetAllTasksAsync()
+        {
+            var tasks = await _unitOfWork.TaskItems.GetAllAsync();
+            var users = await _unitOfWork.Users.GetAllAsync();
+
+            return tasks.Select(t => new TaskDto
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                Status = t.Status.ToString(),
+                Priority = t.Priority.ToString(),
+                DueDate = t.DueDate,
+                CreatedAt = t.CreatedAt,
+                AssignedToEmail = users.FirstOrDefault(u => u.Id == t.AssignedToUserId)?.Email ?? ""
+            });
+        }
+
+
 
         public async Task<IEnumerable<TaskDto>> GetOverdueTasksAsync(Guid userId)
         {

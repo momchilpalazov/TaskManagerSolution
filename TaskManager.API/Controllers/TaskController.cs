@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Application.DTOs;
 using TaskManager.Application.Interfaces;
+using TaskManager.Application.Utils;
 
 namespace TaskManager.API.Controllers
 {
@@ -76,6 +77,15 @@ namespace TaskManager.API.Controllers
             var userId = Guid.Parse(userIdClaim.Value);
             var tasks = await _taskService.GetOverdueTasksAsync(userId);
             return Ok(tasks);
+        }
+
+        [HttpGet("export")]
+        public async Task<IActionResult> ExportTasksAsCsv()
+        {
+            var tasks = await _taskService.GetAllTasksAsync(); // или само на текущия потребител
+            var csv = CsvExporter.ExportTasksToCsv(tasks);
+
+            return File(csv, "text/csv", "tasks_export.csv");
         }
 
 
