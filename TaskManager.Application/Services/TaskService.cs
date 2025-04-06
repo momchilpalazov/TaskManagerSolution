@@ -144,5 +144,23 @@ namespace TaskManager.Application.Services
             return true;
         }
 
+        public async Task<IEnumerable<TaskDto>> GetTasksForUserAsync(Guid userId)
+        {
+            var tasks = await _unitOfWork.TaskItems.FindAsync(t => t.AssignedToUserId == userId);
+
+            return tasks.Select(task => new TaskDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                Status = task.Status.ToString(),
+                Priority = task.Priority.ToString(),
+                CreatedAt = task.CreatedAt,
+                DueDate = task.DueDate,
+                AssignedToEmail = task.AssignedToUser?.Email ?? ""
+            });
+        }
+
+        
     }
 }

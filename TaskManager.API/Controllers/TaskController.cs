@@ -55,6 +55,17 @@ namespace TaskManager.API.Controllers
             return NoContent(); // 204
         }
 
+        [HttpGet("mine")]
+        public async Task<ActionResult<IEnumerable<TaskDto>>> GetMyTasks()
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim == null) return Unauthorized();
+
+            var userId = Guid.Parse(userIdClaim.Value);
+            var tasks = await _taskService.GetTasksForUserAsync(userId);
+            return Ok(tasks);
+        }
+
 
 
     }
