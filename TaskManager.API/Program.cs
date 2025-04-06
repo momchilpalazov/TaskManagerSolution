@@ -30,6 +30,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 var jwtSetings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSetings.GetValue<string>("Secret") ?? throw new ArgumentNullException("Secret key not found in configuration");
