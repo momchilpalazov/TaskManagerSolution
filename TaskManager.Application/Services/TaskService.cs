@@ -113,5 +113,36 @@ namespace TaskManager.Application.Services
                 AssignedToEmail = task.AssignedToUser?.Email ?? ""
             });
         }
+
+        public async Task<bool> UpdateTaskAsync(Guid id, UpdateTaskDto dto)
+        {
+            var task = await _unitOfWork.TaskItems.GetByIdAsync(id);
+            if (task == null) return false;
+
+            Enum.TryParse<Domain.Entities.TaskStatus>(dto.Status, out var status);
+            Enum.TryParse<TaskPriority>(dto.Priority, out var priority);
+
+            task.Title = dto.Title;
+            task.Description = dto.Description;
+            task.Status = status;
+            task.Priority = priority;
+            task.DueDate = dto.DueDate;
+
+            _unitOfWork.TaskItems.Update(task);
+            await _unitOfWork.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteTaskAsync(Guid id)
+        {
+            var task = await _unitOfWork.TaskItems.GetByIdAsync(id);
+            if (task == null) return false;
+
+            _unitOfWork.TaskItems.Delete(task);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

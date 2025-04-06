@@ -9,6 +9,9 @@ namespace TaskManager.Application.Interfaces
         Task<TaskDto> CreateTaskAsync(CreateTaskDto dto);
         Task<IEnumerable<TaskDto>> GetTasksByProjectIdAsync(Guid projectId);
         Task<IEnumerable<TaskDto>> FilterTasksAsync(FilterTasksDto filter);
+        Task<bool> UpdateTaskAsync(Guid id, UpdateTaskDto dto);
+        Task<bool> DeleteTaskAsync(Guid id);
+
 
     }
 }

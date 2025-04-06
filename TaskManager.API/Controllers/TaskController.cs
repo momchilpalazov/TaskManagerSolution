@@ -39,5 +39,23 @@ namespace TaskManager.API.Controllers
             return Ok(tasks);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTask(Guid id, [FromBody] UpdateTaskDto dto)
+        {
+            var updated = await _taskService.UpdateTaskAsync(id, dto);
+            if (!updated) return NotFound(new { message = "Task not found." });
+            return NoContent(); // 204
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTask(Guid id)
+        {
+            var deleted = await _taskService.DeleteTaskAsync(id);
+            if (!deleted) return NotFound(new { message = "Task not found." });
+            return NoContent(); // 204
+        }
+
+
+
     }
 }
