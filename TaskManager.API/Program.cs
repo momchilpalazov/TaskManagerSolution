@@ -2,7 +2,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using TaskManager.Application.Interfaces;
 using TaskManager.Infrastructure.Data;
+using TaskManager.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,8 +24,11 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
 
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 var jwtSetings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSetings.GetValue<string>("Secret");
+var secretKey = jwtSetings.GetValue<string>("Secret") ?? throw new ArgumentNullException("Secret key not found in configuration");
 
 builder.Services.AddAuthentication(options =>
 {
