@@ -35,8 +35,8 @@ var secretKey = jwtSetings.GetValue<string>("Secret") ?? throw new ArgumentNullE
 
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = "Bearer";
-    options.DefaultChallengeScheme = "Bearer";
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).
 AddJwtBearer(options =>
 {

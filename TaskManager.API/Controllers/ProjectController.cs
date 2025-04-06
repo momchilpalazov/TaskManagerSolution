@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManager.Application.DTOs;
 using TaskManager.Application.Interfaces;
 
 namespace TaskManager.API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
-    public class ProjectController : Controller
+    public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
         public ProjectController(IProjectService projectService)

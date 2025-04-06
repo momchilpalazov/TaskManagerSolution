@@ -29,5 +29,19 @@ namespace TaskManager.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<LoginResponseDto>> Login(LoginDto dto)
+        {
+            try
+            {
+                var result = await _userService.LoginAsync(dto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
