@@ -18,6 +18,8 @@ namespace TaskManager.Application.Interfaces
         Task<IEnumerable<TaskDto>> GetTasksForTodayAsync(Guid userId);
         Task<IEnumerable<TaskDto>> GetTasksForTomorrowAsync(Guid userId);
         Task<IEnumerable<TaskDto>> GetTasksForWeekAsync(Guid userId);
+        Task<IEnumerable<TaskDto>> GetTasksByLabelAsync(Guid userId, Guid labelId);
+
 
 
 

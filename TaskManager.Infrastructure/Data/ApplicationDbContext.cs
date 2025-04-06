@@ -33,6 +33,19 @@ namespace TaskManager.Infrastructure.Data
                 .WithOne(t => t.Project)
                 .HasForeignKey(t => t.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TaskLabel>()
+                .HasKey(tl => new { tl.TaskItemId, tl.LabelId });
+
+            modelBuilder.Entity<TaskLabel>()
+                .HasOne(tl => tl.TaskItem)
+                .WithMany(t => t.TaskLabels)
+                .HasForeignKey(tl => tl.TaskItemId);
+
+            modelBuilder.Entity<TaskLabel>()
+                .HasOne(tl => tl.Label)
+                .WithMany(l => l.TaskLabels)
+                .HasForeignKey(tl => tl.LabelId);
+
 
 
 

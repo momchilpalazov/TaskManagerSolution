@@ -22,5 +22,8 @@ namespace TaskManager.Domain.Entities
 
         public Guid AssignedToUserId { get; set; }
         public User AssignedToUser { get; set; } = null!;
+
+        public ICollection<TaskLabel> TaskLabels { get; set; } = new List<TaskLabel>();
+
     }
 }

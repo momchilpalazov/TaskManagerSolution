@@ -32,6 +32,13 @@ namespace TaskManager.Application.Services
 
             var task = _mapper.Map<TaskItem>(dto);
 
+            if (dto.LabelIds.Any())
+            {
+                var labels = await _unitOfWork.Labels.FindAsync(l => dto.LabelIds.Contains(l.Id));
+                task.TaskLabels = labels.Select(l => new TaskLabel { Label = l }).ToList();
+            }
+
+
             await _unitOfWork.TaskItems.AddAsync(task);
             await _unitOfWork.SaveChangesAsync();
 
@@ -278,6 +285,15 @@ namespace TaskManager.Application.Services
             return tasks.Select(_mapper.Map<TaskDto>);
         }
 
+        public async Task<IEnumerable<TaskDto>> GetTasksByLabelAsync(Guid userId, Guid labelId)
+        {
+            var tasks = await _unitOfWork.TaskItems.FindAsync(t =>
+                t.AssignedToUserId == userId &&
+                t.TaskLabels.Any(tl => tl.LabelId == labelId)
+            );
+
+            return tasks.Select(_mapper.Map<TaskDto>);
+        }
 
 
 

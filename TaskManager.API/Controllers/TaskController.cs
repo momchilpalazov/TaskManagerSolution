@@ -129,6 +129,13 @@ namespace TaskManager.API.Controllers
             return Guid.Parse(userIdClaim!.Value);
         }
 
+        [HttpGet("by-label/{labelId}")]
+        public async Task<ActionResult<IEnumerable<TaskDto>>> GetByLabel(Guid labelId)
+        {
+            var userId = GetUserIdFromToken();
+            var tasks = await _taskService.GetTasksByLabelAsync(userId, labelId);
+            return Ok(tasks);
+        }
 
 
 

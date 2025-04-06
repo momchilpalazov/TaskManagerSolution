@@ -17,6 +17,11 @@ namespace TaskManager.Application.Mappings
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
                 .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority.ToString()))
                 .ForMember(dest => dest.AssignedToEmail, opt => opt.MapFrom(src => src.AssignedToUser.Email));
+
+            CreateMap<Label, LabelDto>();
+            CreateMap<TaskItem, TaskDto>()
+                .ForMember(dest => dest.Labels, opt => opt.MapFrom(src => src.TaskLabels.Select(tl => tl.Label)));
+
         }
     }
 }

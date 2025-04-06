@@ -12,5 +12,9 @@ namespace TaskManager.Application.DTOs
         public DateTime CreatedAt { get; set; }
         public DateTime? DueDate { get; set; }
         public string AssignedToEmail { get; set; } = string.Empty;
+
+        public ICollection<LabelDto> Labels { get; set; } = new List<LabelDto>();
+
+
     }
 }

@@ -44,6 +44,8 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateTaskDtoValidator>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddScoped<ILabelService, LabelService>();
+
 
 
 
