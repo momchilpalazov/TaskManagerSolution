@@ -15,6 +15,10 @@ namespace TaskManager.Application.Interfaces
         Task<IEnumerable<TaskDto>> GetTasksForUserAsync(Guid userId);
         Task<IEnumerable<TaskDto>> GetOverdueTasksAsync(Guid userId);
         Task<IEnumerable<TaskDto>> SearchTasksAsync(Guid userId, string keyword);
+        Task<IEnumerable<TaskDto>> GetTasksForTodayAsync(Guid userId);
+        Task<IEnumerable<TaskDto>> GetTasksForTomorrowAsync(Guid userId);
+        Task<IEnumerable<TaskDto>> GetTasksForWeekAsync(Guid userId);
+
 
 
 

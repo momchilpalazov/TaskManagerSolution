@@ -233,6 +233,51 @@ namespace TaskManager.Application.Services
             });
         }
 
+        public async Task<IEnumerable<TaskDto>> GetTasksForTodayAsync(Guid userId)
+        {
+            var today = DateTime.UtcNow.Date;
+
+            var tasks = await _unitOfWork.TaskItems.FindAsync(t =>
+                t.AssignedToUserId == userId &&
+                t.DueDate.HasValue &&
+                t.DueDate.Value.Date == today &&
+                t.Status != Domain.Entities.TaskStatus.Done
+            );
+
+            return tasks.Select(_mapper.Map<TaskDto>);
+        }
+
+        public async Task<IEnumerable<TaskDto>> GetTasksForTomorrowAsync(Guid userId)
+        {
+            var tomorrow = DateTime.UtcNow.Date.AddDays(1);
+
+            var tasks = await _unitOfWork.TaskItems.FindAsync(t =>
+                t.AssignedToUserId == userId &&
+                t.DueDate.HasValue &&
+                t.DueDate.Value.Date == tomorrow &&
+                t.Status != Domain.Entities.TaskStatus.Done
+            );
+
+            return tasks.Select(_mapper.Map<TaskDto>);
+        }
+
+        public async Task<IEnumerable<TaskDto>> GetTasksForWeekAsync(Guid userId)
+        {
+            var today = DateTime.UtcNow.Date;
+            var startOfWeek = today.AddDays(-(int)today.DayOfWeek + 1); // Понеделник
+            var endOfWeek = startOfWeek.AddDays(6); // Неделя
+
+            var tasks = await _unitOfWork.TaskItems.FindAsync(t =>
+                t.AssignedToUserId == userId &&
+                t.DueDate.HasValue &&
+                t.DueDate.Value.Date >= startOfWeek &&
+                t.DueDate.Value.Date <= endOfWeek &&
+                t.Status != Domain.Entities.TaskStatus.Done
+            );
+
+            return tasks.Select(_mapper.Map<TaskDto>);
+        }
+
 
 
 

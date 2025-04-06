@@ -99,6 +99,36 @@ namespace TaskManager.API.Controllers
             return Ok(results);
         }
 
+        [HttpGet("today")]
+        public async Task<ActionResult<IEnumerable<TaskDto>>> GetTodayTasks()
+        {
+            var userId = GetUserIdFromToken();
+            var tasks = await _taskService.GetTasksForTodayAsync(userId);
+            return Ok(tasks);
+        }
+
+        [HttpGet("tomorrow")]
+        public async Task<ActionResult<IEnumerable<TaskDto>>> GetTomorrowTasks()
+        {
+            var userId = GetUserIdFromToken();
+            var tasks = await _taskService.GetTasksForTomorrowAsync(userId);
+            return Ok(tasks);
+        }
+
+        [HttpGet("week")]
+        public async Task<ActionResult<IEnumerable<TaskDto>>> GetWeekTasks()
+        {
+            var userId = GetUserIdFromToken();
+            var tasks = await _taskService.GetTasksForWeekAsync(userId);
+            return Ok(tasks);
+        }
+
+        private Guid GetUserIdFromToken()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            return Guid.Parse(userIdClaim!.Value);
+        }
+
 
 
 
